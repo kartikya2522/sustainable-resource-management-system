@@ -1,0 +1,1 @@
+# Waste Resource implementation placeholder

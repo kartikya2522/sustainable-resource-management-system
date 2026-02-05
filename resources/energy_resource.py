@@ -1,0 +1,1 @@
+# Energy Resource implementation placeholder
