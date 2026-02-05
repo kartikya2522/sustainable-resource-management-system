@@ -34,9 +34,9 @@ class Resource:
             ValueError: If amount is not positive or exceeds available resource.
         """
         if amount <= 0:
-            raise ValueError("Usage amount must be positive.")
+            raise ValueError(f"Usage amount must be positive. Received: {amount}")
         
         if amount > self._current_available:
-            raise ValueError(f"Requested amount {amount} exceeds available resource {self._current_available}.")
+            raise ValueError(f"Requested amount {amount} exceeds available resource {self._current_available} for '{self.name}'.")
 
         self._current_available -= amount

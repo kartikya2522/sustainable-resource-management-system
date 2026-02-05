@@ -26,6 +26,10 @@ class Consumer:
             print(f"Error: Resource '{resource.name}' is not assigned to Consumer '{self.name}'.")
             return
 
+        if amount <= 0:
+            print(f"Error: Invalid amount {amount} for resource '{resource.name}'. Amount must be positive.")
+            return
+
         try:
             resource.update_availability(amount)
             # Since we cannot add new attributes, we don't track specific usage per consumer here
