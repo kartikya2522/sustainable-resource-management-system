@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 import sys
 import os
 
@@ -12,6 +14,10 @@ from consumer.consumer import Consumer
 from api.external_climatiq_api import get_carbon_emissions
 
 app = FastAPI(title="Sustainable Resource Management API")
+
+# Setup templates directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # --- System State Setup (Simulated Database) ---
 # Recreating the simulation environment
@@ -31,6 +37,13 @@ c1.use_resource(water_res, 50.0)
 c1.use_resource(solar_res, 200.0)
 c2.use_resource(coal_res, 1800.0) # High usage
 c2.use_resource(water_res, 300.0)
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    """
+    Serves the landing page.
+    """
+    return templates.TemplateResponse("index.html", {"request": request})
 
 @app.get("/sustainability/context")
 def get_sustainability_context():
