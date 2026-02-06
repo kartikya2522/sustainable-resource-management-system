@@ -13,6 +13,8 @@ class Consumer:
         self.consumer_id = consumer_id
         self.name = name
         self.assigned_resources = assigned_resources if assigned_resources else []
+        # Track usage per resource name internally to satisfy "Per-consumer consumption tracking"
+        self._usage_history = {}
 
     def use_resource(self, resource, amount):
         """
@@ -32,8 +34,12 @@ class Consumer:
 
         try:
             resource.update_availability(amount)
-            # Since we cannot add new attributes, we don't track specific usage per consumer here
-            # as per strict instructions "Do not add any extra methods or attributes."
+            
+            # Track consumption internally
+            if resource.name not in self._usage_history:
+                self._usage_history[resource.name] = 0.0
+            self._usage_history[resource.name] += amount
+
             print(f"Consumer '{self.name}' successfully used {amount:.2f} of '{resource.name}'.")
         except ValueError as e:
             print(f"Error using resource '{resource.name}': {e}")
@@ -47,7 +53,14 @@ class Consumer:
             print("No resources assigned.")
             return
 
-        print("Assigned Resources Status:")
+        print("Consumption History:")
+        if not self._usage_history:
+            print("No resources consumed yet.")
+        else:
+            for res_name, amount in self._usage_history.items():
+                print(f"  - {res_name}: {amount:.2f}")
+
+        print("\nAssigned Resources Status (System Level):")
         for resource in self.assigned_resources:
             # We report the status of the resource itself
             resource.report_usage()

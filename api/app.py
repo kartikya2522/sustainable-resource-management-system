@@ -12,7 +12,6 @@ from resources.water_resource import WaterResource
 from resources.energy_resource import EnergyResource
 from resources.waste_resource import WasteResource
 from consumer.consumer import Consumer
-from api.external_climatiq_api import get_carbon_emissions
 
 app = FastAPI(title="Sustainable Resource Management API")
 
@@ -42,6 +41,15 @@ c1.use_resource(solar_res, 200.0)
 c2.use_resource(coal_res, 1800.0) # High usage
 c2.use_resource(water_res, 300.0)
 
+# Internal Carbon Intensity Factors (kg CO2e per unit)
+# These are estimated values for the simulation
+CARBON_FACTORS = {
+    "Municipal Water": 0.001,    # Pumping/Treatment
+    "Solar Energy Grid": 0.05,   # Lifecycle emissions
+    "Coal Power Plant": 0.9,     # Direct emissions
+    "Recyclable Waste": 0.02     # Transport/Processing
+}
+
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
     """
@@ -52,17 +60,19 @@ async def read_root(request: Request):
 @app.get("/sustainability/context")
 def get_sustainability_context():
     """
-    Returns a combined report of internal system sustainability metrics
-    and external carbon emission context from Climatiq.
+    Returns a combined report of internal system sustainability metrics.
+    Now calculates environmental impact internally without external APIs.
     """
     try:
         # 1. Calculate Internal Metrics
-        # Manually calculating as per SustainabilityReport logic to return JSON
         total_usage = 0.0
         renewable_usage = 0.0
         non_renewable_usage = 0.0
         resource_stats = []
         alerts = []
+        
+        # Environmental Impact Calculation
+        total_carbon_footprint = 0.0
 
         for resource in all_resources:
             # Calculate usage (total_available - current_available)
@@ -76,12 +86,18 @@ def get_sustainability_context():
             else:
                 non_renewable_usage += used_amount
 
+            # Calculate Carbon Footprint for this resource
+            factor = CARBON_FACTORS.get(resource.name, 0.0)
+            emissions = used_amount * factor
+            total_carbon_footprint += emissions
+
             resource_stats.append({
                 "name": resource.name,
                 "used": round(used_amount, 2),
                 "total": round(resource.total_available, 2),
                 "usage_percent": round(usage_percent, 1),
-                "renewable": resource.renewable
+                "renewable": resource.renewable,
+                "emissions": round(emissions, 2)
             })
 
             if usage_percent > 80:
@@ -96,35 +112,18 @@ def get_sustainability_context():
             "recommendation": "Shift consumption towards renewable resources." if non_renewable_usage > renewable_usage else "Maintain current consumption patterns."
         }
 
-        # 2. Fetch External Context
-        # Using the total energy usage (Solar + Coal) from our internal state
-        total_energy_kwh = 0.0
-        # Identifying energy resources by type check or name assumption for this simulation
-        for res in all_resources:
-            if isinstance(res, EnergyResource):
-                used = res.total_available - res._current_available
-                total_energy_kwh += used
-
-        external_data = None
-        external_error = None
-        
-        try:
-            # Fetch for US region as default context
-            external_data = get_carbon_emissions(total_energy_kwh, region="US")
-            if external_data is None:
-                external_error = "External API returned no data (check API key)."
-        except Exception as e:
-            external_error = f"Failed to connect to external API: {str(e)}"
+        # 2. Environmental Impact Report (Internal Logic Only)
+        impact_report = {
+            "description": "Estimated carbon footprint based on internal resource usage and type intensity factors.",
+            "total_co2e": round(total_carbon_footprint, 2),
+            "unit": "kg CO2e",
+            "status": "simulated_internal"
+        }
 
         # 3. Construct Combined Response
         response = {
             "internal_sustainability_metrics": internal_metrics,
-            "external_carbon_context": {
-                "description": f"Carbon emission estimate for total energy usage ({total_energy_kwh} kWh) in US region.",
-                "data": external_data,
-                "status": "success" if external_data else "partial_failure",
-                "error": external_error
-            }
+            "environmental_impact": impact_report
         }
 
         return response

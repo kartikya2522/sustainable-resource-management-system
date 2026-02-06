@@ -1,81 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sustainable Resource Management System</title>
+    <title>Smart City | Sustainability Dashboard</title>
+    <!-- Styles -->
     <link rel="stylesheet" href="/static/styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-    <header>
-        <div class="container">
-            <h1>Sustainable Resource Management System</h1>
-            <p>Smart City Solutions for a Greener Future</p>
+
+    <!-- HEADER -->
+    <header class="dashboard-header">
+        <div class="header-content container">
+            <div class="branding">
+                <i class="fa-solid fa-city fa-2x"></i>
+                <div class="titles">
+                    <h1>Sustainable Resource Management</h1>
+                    <span class="subtitle">Smart City Command Center</span>
+                </div>
+            </div>
+            <div class="status-badge" id="system-status">
+                <i class="fa-solid fa-circle-check"></i> System Healthy
+            </div>
         </div>
     </header>
 
-    <div class="container">
-        <!-- Alerts Section -->
-        <div id="alerts" class="alert-box"></div>
+    <div class="container main-container">
 
-        <!-- Dashboard Content -->
-        <div id="loading">
-            <div class="spinner"></div>
-            <p style="text-align: center;">Loading Sustainability Metrics...</p>
+        <!-- ALERTS AREA -->
+        <div id="alerts-area" class="alerts-container"></div>
+
+        <!-- LOADING STATE -->
+        <div id="loading" class="loading-state">
+            <i class="fa-solid fa-circle-notch fa-spin fa-3x"></i>
+            <p>Connecting to Internal Resource Grid...</p>
         </div>
 
-        <div id="dashboard-content" style="display: none;">
-            
-            <section id="overview">
-                <h2>System Overview</h2>
-                <div class="dashboard-grid">
-                    <div class="metric-card">
-                        <h3>Total Resource Usage</h3>
-                        <div id="total-usage" class="metric-value">--</div>
-                        <p class="metric-sub">Across all tracked resources</p>
-                    </div>
-                    <div class="metric-card">
-                        <h3>Renewable Usage</h3>
-                        <div id="renewable-pct" class="metric-value">--%</div>
-                        <p id="renewable-sub" class="metric-sub">-- units</p>
-                    </div>
-                    <div class="metric-card">
-                        <h3>Non-Renewable Usage</h3>
-                        <div id="non-renewable-pct" class="metric-value">--%</div>
-                        <p id="non-renewable-sub" class="metric-sub">-- units</p>
+        <!-- DASHBOARD CONTENT -->
+        <div id="dashboard-content" class="dashboard-grid" style="display: none;">
+
+            <!-- KPI ROW -->
+            <section class="kpi-section">
+                <!-- Total Usage -->
+                <div class="kpi-card">
+                    <div class="kpi-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="kpi-total">--</span>
+                        <span class="kpi-label">Total Consumption</span>
                     </div>
                 </div>
-                <div id="recommendation" class="recommendation-box"></div>
+
+                <!-- Renewable % -->
+                <div class="kpi-card">
+                    <div class="kpi-icon success"><i class="fa-solid fa-leaf"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="kpi-renewable">--%</span>
+                        <span class="kpi-label">Renewable Energy</span>
+                    </div>
+                </div>
+
+                <!-- Non-Renewable % -->
+                <div class="kpi-card">
+                    <div class="kpi-icon warning"><i class="fa-solid fa-smog"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="kpi-non-renewable">--%</span>
+                        <span class="kpi-label">Non-Renewable</span>
+                    </div>
+                </div>
+
+                <!-- Carbon Footprint -->
+                <div class="kpi-card">
+                    <div class="kpi-icon danger"><i class="fa-solid fa-shoe-prints"></i></div>
+                    <div class="kpi-data">
+                        <span class="kpi-value" id="kpi-carbon">--</span>
+                        <span class="kpi-label">Est. Carbon Footprint (kg)</span>
+                    </div>
+                </div>
             </section>
 
-            <section id="details">
-                <h2>Resource Breakdown</h2>
-                <div id="resource-breakdown" class="resources">
-                    <!-- Javascript will populate this -->
+            <!-- CHARTS & SUMMARY ROW -->
+            <section class="charts-section">
+                <div class="chart-card">
+                    <h3><i class="fa-solid fa-pie-chart"></i> Energy Mix Analysis</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="mixChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="fa-solid fa-bar-chart"></i> Resource Consumption</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="usageChart"></canvas>
+                    </div>
                 </div>
             </section>
 
-            <section id="external">
-                <h2>External Environmental Context</h2>
-                <div id="external-context">
-                    <!-- Javascript will populate this -->
+            <!-- RESOURCE MONITOR & IMPACT ROW -->
+            <section class="details-section">
+
+                <!-- Resource List -->
+                <div class="monitor-card">
+                    <h3><i class="fa-solid fa-server"></i> Live Resource Monitor</h3>
+                    <div id="resource-list" class="resource-list">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
+
+                <!-- Environmental Impact & Recommendations -->
+                <div class="impact-card">
+                    <div class="impact-header">
+                        <h3><i class="fa-solid fa-earth-americas"></i> Environmental Impact Analysis</h3>
+                    </div>
+
+                    <div id="impact-content" class="impact-body">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div id="recommendation-area" class="recommendation-box">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
             </section>
+
         </div>
-
-        <section id="info" style="margin-top: 3rem; color: #777; font-size: 0.9rem;">
-            <h2>About</h2>
-            <p>
-                This system integrates real-time resource tracking (Water, Energy, Waste) with external climate data 
-                to provide actionable insights for smart city management.
-            </p>
-        </section>
     </div>
 
-    <footer>
-        <p>Sustainable Resource Management System &copy; 2026</p>
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+        <p>Sustainable Resource Management System v1.0 | Internal Use Only</p>
+        <p class="copyright">&copy; 2026 Smart City Initiative</p>
     </footer>
 
+    <!-- Logic -->
     <script src="/static/app.js"></script>
 </body>
+
 </html>
