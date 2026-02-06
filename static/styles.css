@@ -1,0 +1,121 @@
+:root {
+    --primary-color: #27ae60;
+    --secondary-color: #2c3e50;
+    --accent-color: #2980b9;
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --border-radius: 8px;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+header {
+    background-color: var(--secondary-color);
+    color: #ecf0f1;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 2rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-top: 2rem;
+}
+
+.resources, .dashboard-grid {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    gap: 1.5rem;
+}
+
+.resource-card, .metric-card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    flex: 1 1 300px; /* Responsive flex */
+    text-align: center;
+}
+
+.resource-card h3, .metric-card h3 {
+    color: var(--accent-color);
+    margin-top: 0;
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin: 1rem 0;
+}
+
+.metric-sub {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+.alert-box {
+    background-color: #e74c3c;
+    color: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+    display: none; /* Hidden by default */
+}
+
+.recommendation-box {
+    background-color: #dff0d8;
+    color: #3c763d;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid #d6e9c6;
+}
+
+footer {
+    background-color: var(--secondary-color);
+    color: #ecf0f1;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: 3rem;
+}
+
+/* Loading Spinner */
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: var(--primary-color);
+    animation: spin 1s ease-infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

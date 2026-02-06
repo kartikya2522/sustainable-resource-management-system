@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import sys
 import os
@@ -18,6 +19,9 @@ app = FastAPI(title="Sustainable Resource Management API")
 # Setup templates directory
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+
+# Mount static files
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 # --- System State Setup (Simulated Database) ---
 # Recreating the simulation environment
